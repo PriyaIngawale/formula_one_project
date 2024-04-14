@@ -1,0 +1,28 @@
+{
+	"name": "ds_delete_using_parameter",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sourcegen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"delete_parameter": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().delete_parameter",
+					"type": "Expression"
+				},
+				"folderPath": "hollywood",
+				"fileSystem": "movies"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

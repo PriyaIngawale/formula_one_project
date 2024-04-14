@@ -1,0 +1,27 @@
+{
+	"name": "ds_get_metadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sourcegen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dir_param": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().dir_param",
+					"type": "Expression"
+				},
+				"fileSystem": "movies"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

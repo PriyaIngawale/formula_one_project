@@ -1,0 +1,9 @@
+{
+	"name": "df-practice-activities",
+	"location": "southindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1571f663-5992-4e61-aaad-fe49b3fe67be",
+		"tenantId": "1f23aa84-b586-41ea-80ee-c26addc26fd2"
+	}
+}

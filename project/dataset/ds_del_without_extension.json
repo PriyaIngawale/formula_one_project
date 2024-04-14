@@ -1,0 +1,28 @@
+{
+	"name": "ds_del_without_extension",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sourcegen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"delete_file_param": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().delete_file_param",
+					"type": "Expression"
+				},
+				"folderPath": "hollywood",
+				"fileSystem": "movies"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

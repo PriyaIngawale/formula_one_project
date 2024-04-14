@@ -1,0 +1,26 @@
+{
+	"name": "ds_container",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sourcegen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container_param": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@dataset().container_param",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
