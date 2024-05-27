@@ -1,0 +1,277 @@
+{
+	"name": "api_activity",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "http://ergast.com/api/f1/2008/2/results.json"
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Web1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "api var",
+					"value": {
+						"value": "@string(activity('Web1').output)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['raceName']"
+								},
+								"sink": {
+									"name": "raceName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Circuit']['circuitId']"
+								},
+								"sink": {
+									"name": "circuitId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Circuit']['circuitName']"
+								},
+								"sink": {
+									"name": "circuitName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Circuit']['Location']['country']"
+								},
+								"sink": {
+									"name": "country",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['date']"
+								},
+								"sink": {
+									"name": "date",
+									"type": "Date"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['number']"
+								},
+								"sink": {
+									"name": "number",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['position']"
+								},
+								"sink": {
+									"name": "position",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['positionText']"
+								},
+								"sink": {
+									"name": "positionText",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['points']"
+								},
+								"sink": {
+									"name": "points",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['Driver']['driverId']"
+								},
+								"sink": {
+									"name": "driverId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['Driver']['dateOfBirth']"
+								},
+								"sink": {
+									"name": "dateOfBirth",
+									"type": "Date"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['Constructor']['constructorId']"
+								},
+								"sink": {
+									"name": "constructorId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['Constructor']['name']"
+								},
+								"sink": {
+									"name": "name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['grid']"
+								},
+								"sink": {
+									"name": "grid",
+									"type": "Int16"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['laps']"
+								},
+								"sink": {
+									"name": "laps",
+									"type": "Int16"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['status']"
+								},
+								"sink": {
+									"name": "status",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['Time']['millis']"
+								},
+								"sink": {
+									"name": "millis"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MRData']['RaceTable']['Races'][0]['Results'][0]['Time']['time']"
+								},
+								"sink": {
+									"name": "time"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "RestResource1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"api var": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-04-08T17:26:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

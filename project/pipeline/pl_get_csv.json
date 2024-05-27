@@ -1,0 +1,203 @@
+{
+	"name": "pl_get_csv",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get metadata of container",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_container",
+						"type": "DatasetReference",
+						"parameters": {
+							"container_param": {
+								"value": "@pipeline().parameters.pl_container_name",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "For Each folder in container",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get metadata of container",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get metadata of container').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Get Metadata of folder",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_folder",
+									"type": "DatasetReference",
+									"parameters": {
+										"container_parameter": {
+											"value": "@pipeline().parameters.pl_container_name",
+											"type": "Expression"
+										},
+										"dir_parameter": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "Filter out the csv files",
+							"type": "Filter",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata of folder",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@activity('Get Metadata of folder').output.childItems",
+									"type": "Expression"
+								},
+								"condition": {
+									"value": "@and(endswith(item().name,'.csv'),equals(item().type,'File'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "count_csv_in_each_folder",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Filter out the csv files",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "csv _count",
+								"value": {
+									"value": "@activity('Filter out the csv files').output.FilteredItemsCount",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Setting movie folder content array",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Get metadata of container",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "sub_folder_array",
+					"value": {
+						"value": "@activity('Get metadata of container').output.childItems",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"pl_container_name": {
+				"type": "String"
+			}
+		},
+		"variables": {
+			"csv _count": {
+				"type": "Integer"
+			},
+			"sub_folder_array": {
+				"type": "Array"
+			},
+			"output": {
+				"type": "Array"
+			},
+			"ID": {
+				"type": "Array"
+			},
+			"Final_id": {
+				"type": "Array"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-03-26T13:13:09Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

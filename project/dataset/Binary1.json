@@ -1,0 +1,34 @@
+{
+	"name": "Binary1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sourcegen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dir_param": {
+				"type": "String"
+			},
+			"file_param": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().file_param",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().dir_param",
+					"type": "Expression"
+				},
+				"fileSystem": "movies"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

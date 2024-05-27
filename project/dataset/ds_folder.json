@@ -1,0 +1,33 @@
+{
+	"name": "ds_folder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sourcegen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container_parameter": {
+				"type": "String"
+			},
+			"dir_parameter": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().dir_parameter",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container_parameter",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
